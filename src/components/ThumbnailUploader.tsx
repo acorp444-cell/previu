@@ -53,6 +53,7 @@ export default function ThumbnailUploader({ images, onImagesChange }: Props) {
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       setDragOver(false);
       processFiles(e.dataTransfer.files);
     },
@@ -76,16 +77,17 @@ export default function ThumbnailUploader({ images, onImagesChange }: Props) {
 
   return (
     <div className="space-y-4">
-      <div
-        className={`drop-zone rounded-xl p-8 text-center cursor-pointer ${dragOver ? "drag-over" : ""}`}
+      <label
+        htmlFor="file-input"
+        className={`drop-zone rounded-xl p-8 text-center cursor-pointer block ${dragOver ? "drag-over" : ""}`}
         onDragOver={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           setDragOver(true);
         }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onPaste={handlePaste}
-        onClick={() => document.getElementById("file-input")?.click()}
       >
         <input
           id="file-input"
@@ -114,7 +116,7 @@ export default function ThumbnailUploader({ images, onImagesChange }: Props) {
           </p>
           <p className="text-sm">PNG, JPG, WebP. Можно несколько файлов.</p>
         </div>
-      </div>
+      </label>
 
       {images.length > 0 && (
         <div className="thumbnail-grid">
