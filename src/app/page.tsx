@@ -134,13 +134,13 @@ export default function Home() {
       <div className="bg-card rounded-xl border border-border p-4">
         <div className="flex items-center gap-3">
           <label className="text-sm text-muted whitespace-nowrap">
-            Anthropic API Key:
+            OpenAI API Key:
           </label>
           <input
             type={showApiKey ? "text" : "password"}
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-ant-..."
+            placeholder="sk-..."
             className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent"
           />
           <button
@@ -152,7 +152,7 @@ export default function Home() {
         </div>
         {!apiKey && (
           <p className="text-xs text-muted mt-2">
-            Нужен для анализа превью и генерации промптов через Claude AI
+            Нужен для анализа превью и генерации промптов через GPT-4o
           </p>
         )}
       </div>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 
 export const maxDuration = 60;
 
@@ -27,7 +27,7 @@ Return your analysis as JSON with this structure:
       "layout": "Description of typical layout patterns",
       "focalPoint": "Where the main focus usually is",
       "backgroundStyle": "How backgrounds are typically handled",
-      "facesUsed": true/false,
+      "facesUsed": true,
       "faceExpression": "If faces are used, what expressions"
     },
     "visualElements": {
@@ -106,12 +106,12 @@ export async function POST(request: NextRequest) {
     const apiKey = request.headers.get("x-api-key");
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Anthropic API key is required" },
+        { error: "OpenAI API key is required" },
         { status: 400 }
       );
     }
 
-    const client = new Anthropic({ apiKey });
+    const client = new OpenAI({ apiKey });
 
     if (action === "analyze") {
       if (!images || images.length === 0) {
@@ -121,29 +121,25 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const imageContent: Anthropic.Messages.ContentBlockParam[] = [];
+      const imageContent: OpenAI.Chat.Completions.ChatCompletionContentPart[] = [];
       for (const img of images.slice(0, 10)) {
         imageContent.push({
-          type: "image",
-          source: {
-            type: "base64",
-            media_type: img.mediaType || "image/jpeg",
-            data: img.data,
+          type: "image_url",
+          image_url: {
+            url: `data:${img.mediaType || "image/jpeg"};base64,${img.data}`,
+            detail: "high",
           },
         });
       }
       imageContent.push({ type: "text", text: STYLE_ANALYSIS_PROMPT });
 
-      const response = await client.messages.create({
-        model: "claude-sonnet-4-20250514",
+      const response = await client.chat.completions.create({
+        model: "gpt-4o",
         max_tokens: 4096,
         messages: [{ role: "user", content: imageContent }],
       });
 
-      const text = response.content
-        .filter((b): b is Anthropic.Messages.TextBlock => b.type === "text")
-        .map((b) => b.text)
-        .join("");
+      const text = response.choices[0]?.message?.content || "";
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
@@ -168,16 +164,13 @@ export async function POST(request: NextRequest) {
         .replace("{STYLE_ANALYSIS}", JSON.stringify(styleAnalysis, null, 2))
         .replace("{TOPIC}", topic);
 
-      const response = await client.messages.create({
-        model: "claude-sonnet-4-20250514",
+      const response = await client.chat.completions.create({
+        model: "gpt-4o",
         max_tokens: 4096,
         messages: [{ role: "user", content: prompt }],
       });
 
-      const text = response.content
-        .filter((b): b is Anthropic.Messages.TextBlock => b.type === "text")
-        .map((b) => b.text)
-        .join("");
+      const text = response.choices[0]?.message?.content || "";
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
