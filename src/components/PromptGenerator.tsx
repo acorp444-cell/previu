@@ -10,10 +10,11 @@ interface PromptResult {
     parameters?: string;
   }>;
   compositionTips: string[];
-  textOverlay: {
-    suggested: string;
+  textZone: {
+    side: string;
+    description: string;
+    suggestedText: string;
     font: string;
-    placement: string;
     color: string;
   };
 }
@@ -149,28 +150,28 @@ export default function PromptGenerator({ styleAnalysis, apiKey }: Props) {
             </div>
 
             <div className="bg-card rounded-xl border border-border p-6">
-              <h4 className="font-semibold mb-3">Текст на превью</h4>
+              <h4 className="font-semibold mb-3">Зона для текста (левая сторона)</h4>
               <dl className="space-y-2 text-sm">
                 <div>
-                  <dt className="text-muted">Текст</dt>
-                  <dd className="font-medium">{result.textOverlay.suggested}</dd>
+                  <dt className="text-muted">Описание зоны</dt>
+                  <dd>{result.textZone.description}</dd>
                 </div>
                 <div>
-                  <dt className="text-muted">Шрифт</dt>
-                  <dd>{result.textOverlay.font}</dd>
+                  <dt className="text-muted">Предложенный текст</dt>
+                  <dd className="font-medium">{result.textZone.suggestedText}</dd>
                 </div>
                 <div>
-                  <dt className="text-muted">Расположение</dt>
-                  <dd>{result.textOverlay.placement}</dd>
+                  <dt className="text-muted">Рекомендуемый шрифт</dt>
+                  <dd>{result.textZone.font}</dd>
                 </div>
                 <div className="flex items-center gap-2">
-                  <dt className="text-muted">Цвет</dt>
+                  <dt className="text-muted">Цвет текста</dt>
                   <dd className="flex items-center gap-2">
                     <div
                       className="w-5 h-5 rounded border border-border"
-                      style={{ backgroundColor: result.textOverlay.color }}
+                      style={{ backgroundColor: result.textZone.color }}
                     />
-                    {result.textOverlay.color}
+                    {result.textZone.color}
                   </dd>
                 </div>
               </dl>

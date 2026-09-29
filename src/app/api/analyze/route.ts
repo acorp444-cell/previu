@@ -47,6 +47,12 @@ const PROMPT_GENERATION_PROMPT = `You are an expert at crafting image generation
 
 Based on the channel's visual style analysis below, create a detailed image generation prompt for a new YouTube thumbnail on the given topic.
 
+CRITICAL REQUIREMENTS:
+- The thumbnail must have NO TEXT, NO LETTERS, NO WORDS on the image itself. The user adds text manually later.
+- The LEFT SIDE of the image must have a darkened/gradient area (dark overlay, vignette, or darker background zone) to leave space for the user to add their own text on top.
+- The main visual content and subject should be positioned more toward the CENTER-RIGHT of the composition.
+- The dark zone on the left should feel natural — use gradient fading, shadow, darker background, or vignette effect.
+
 Channel style analysis:
 {STYLE_ANALYSIS}
 
@@ -58,7 +64,11 @@ Generate 3 prompt variants:
 2. A Midjourney-optimized prompt (with --ar 16:9 and style parameters)
 3. A DALL-E optimized prompt (more descriptive, natural language)
 
-For each prompt, maintain the channel's established visual style: same color palette, similar composition, matching mood and typography descriptions.
+For each prompt:
+- Maintain the channel's established visual style: same color palette, similar composition, matching mood.
+- Always include instruction for NO TEXT on the image.
+- Always include the darkened left side for text placement.
+- Include "no text, no letters, no words, no typography" in negative prompts.
 
 Return as JSON:
 {
@@ -66,7 +76,7 @@ Return as JSON:
     {
       "generator": "Universal",
       "prompt": "...",
-      "negativePrompt": "..."
+      "negativePrompt": "text, letters, words, typography, writing, captions, subtitles, watermark..."
     },
     {
       "generator": "Midjourney",
@@ -79,11 +89,12 @@ Return as JSON:
     }
   ],
   "compositionTips": ["Practical tips for composing this specific thumbnail"],
-  "textOverlay": {
-    "suggested": "Suggested text to overlay",
+  "textZone": {
+    "side": "left",
+    "description": "Description of the dark zone for text",
+    "suggestedText": "What text the user could add",
     "font": "Recommended font style",
-    "placement": "Where to place the text",
-    "color": "#hex"
+    "color": "#hex for text that would be readable on the dark zone"
   }
 }`;
 
