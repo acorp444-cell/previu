@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 export const maxDuration = 60;
 
@@ -111,7 +112,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const client = new OpenAI({ apiKey });
+    const proxyUrl = process.env.HTTPS_PROXY;
+    const client = new OpenAI({
+      apiKey,
+      ...(proxyUrl && { httpAgent: new HttpsProxyAgent(proxyUrl) }),
+    });
 
     if (action === "analyze") {
       if (!images || images.length === 0) {
