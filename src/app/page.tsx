@@ -152,7 +152,7 @@ export default function Home() {
         </div>
         {!apiKey && (
           <p className="text-xs text-muted mt-2">
-            Нужен для анализа превью и генерации промптов через GPT-4o
+            Нужен для анализа превью и генерации промптов через GPT-5.1
           </p>
         )}
       </div>

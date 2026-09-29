@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       imageContent.push({ type: "text", text: STYLE_ANALYSIS_PROMPT });
 
       const response = await client.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5.1",
         max_tokens: 4096,
         messages: [{ role: "user", content: imageContent }],
       });
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         .replace("{TOPIC}", topic);
 
       const response = await client.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5.1",
         max_tokens: 4096,
         messages: [{ role: "user", content: prompt }],
       });
